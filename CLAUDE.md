@@ -17,6 +17,6 @@ UI Launch → API Server → npx ruflo hive-mind spawn ... → db updates → UI
 
 ## Coding Rules - Never mock data — always read from the real db - Never add features not in the prompt library unless explicitly asked - When a prompt is ambiguous, ask ONE clarifying question before writing code - All new hooks go in ui/hooks/, all server logic in ui/server/ - Commit at every [CHECKPOINT]
 
-## Current Status Last completed prompt: Phase 0 complete Current phase: Ready for Phase 1 Blockers: none Next prompt: Prompt 1.1 — Create the UI Subdirectory
+## Current Status Last completed prompt: Prompt 1.3 — Types + Zustand Stores (checkpoint commit c129c4ce) Current phase: Phase 1 complete — ready for Phase 2 Blockers: ui/server/ missing (npm run dev errors on ts-node half; next dev works standalone) Next prompt: Prompt 2.1 — API server scaffold (ui/server/api.ts, ui/server/db.ts, real DB schema)
 
 ## Known Issues - None yet
