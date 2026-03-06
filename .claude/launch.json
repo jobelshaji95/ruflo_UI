@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "ruflo-dev",
+      "runtimeExecutable": "C:\\Program Files\\Git\\bin\\bash.exe",
+      "runtimeArgs": ["-c", "cd ui && PORT=3002 API_PORT=3003 NEXT_PUBLIC_API_URL=http://localhost:3003 npx next dev -p 3002"],
+      "port": 3002
+    },
+    {
+      "name": "ruflo-api",
+      "runtimeExecutable": "C:\\Program Files\\Git\\bin\\bash.exe",
+      "runtimeArgs": ["-c", "cd ui && API_PORT=3003 npx ts-node --project tsconfig.server.json server/api.ts"],
+      "port": 3003
+    }
+  ]
+}
