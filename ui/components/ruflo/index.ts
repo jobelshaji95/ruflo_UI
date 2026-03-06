@@ -5,3 +5,7 @@ export { Panel } from "./Panel";
 export { EmptyState } from "./EmptyState";
 export { DbStatusBanner } from "./DbStatusBanner";
 export { RufloSocket } from "./RufloSocket";
+export { DaemonPanel } from "./DaemonPanel";
+export { AgentDetailPanel } from "./AgentDetailPanel";
+export { SwarmCanvas } from "./SwarmCanvas";
+export { SpawnAgentModal } from "./SpawnAgentModal";

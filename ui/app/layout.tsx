@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "sonner";
 import { RufloSocket } from "@/components/ruflo";
 
 const inter = Inter({
@@ -30,6 +31,7 @@ export default function RootLayout({
       >
         <RufloSocket />
         {children}
+        <Toaster position="top-right" theme="dark" richColors />
       </body>
     </html>
   );
