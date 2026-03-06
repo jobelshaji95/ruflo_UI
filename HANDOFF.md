@@ -4,6 +4,44 @@ Append a new entry at the top after every session. Never delete old entries.
 
 ---
 
+## Session — 2026-03-06 | Phase 4, Prompt 4.1 (≈ 30 min)
+
+### Prompts Completed
+- **Prompt 4.1** — Spawn Agent Modal (full replacement of Phase 3 stub) ✅
+- **`[CHECKPOINT]`** — committed Phase 4, Prompt 4.1
+
+### What Was Done
+Replaced the basic Phase 3 `SpawnAgentModal` stub with the full Prompt 4.1 implementation: agent type dropdown (8 predefined types, default `worker`), auto-generated name `<type>-<4char-random>` that regenerates on type change, live read-only command preview, and inline error display (no more `toast.error`). Updated success toast to the exact string from the prompt spec. Also created `.claude/launch.json` for reproducible dev server startup.
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `ui/components/ruflo/SpawnAgentModal.tsx` | Full replacement. Dropdown (not text input) for type, auto-name gen, command preview, inline errors, updated toast message, `swarmId` in POST body. |
+
+### Files Created
+| File | Notes |
+|------|-------|
+| `.claude/launch.json` | Dev server configs for `ruflo-dev` (Next.js :3002) and `ruflo-api` (API :3003). Uses `C:\Program Files\Git\bin\bash.exe` as executor — required on Windows since `npm`/`bash` not in PATH of preview tool. Ports offset to 3002/3003 to avoid conflict with main-repo servers on 3000/3001. |
+
+### Deviations from Prompts (with reasons)
+1. **Agent type list not specified in prompt** — Prompt says "agent type (dropdown)" but gives no list. Chose 8 types (`worker`, `orchestrator`, `coordinator`, `researcher`, `coder`, `reviewer`, `specialist`, `analyst`) based on codebase references in `SwarmCanvas.tsx` (`isOrchestrator` regex) and common ruflo usage patterns. Easy to adjust.
+
+### Bugs Hit & Resolved
+1. **`preview_start` spawn failures on Windows** — `npm`, `bash`, `C:\Program Files\nodejs\npm.cmd` (spaces in path) all failed. Root cause: preview tool doesn't inherit the shell's PATH. Fix: full path to `C:\Program Files\Git\bin\bash.exe` + `-c "cd ui && ..."` args. ✅ Resolved.
+2. **Worktree `node_modules` empty** — Git worktrees don't inherit `node_modules` from the main repo. Fix: ran `npm install` in `ui/` under the worktree. ✅ Resolved.
+3. **Port 3000/3001 already taken** — Main repo's servers were running. Fix: moved worktree servers to 3002/3003 via env vars and `-p 3002` Next.js flag. ✅ Resolved.
+
+### Blockers / Open Questions
+1. **No live swarm for end-to-end test** — Modal opens in tests via DOM injection; real flow requires `npx ruflo hive-mind spawn` to produce socket.io swarm events. Modal POST flow not exercised against a real swarm.
+2. **`POST /swarms/:id/stop`** — Still a no-op placeholder. Carry forward.
+3. **Playwright not installed** — `npm run test` still fails. Carry forward until test prompts begin.
+4. **Worktree `node_modules`** — Separate from main repo; must re-run `npm install` in `ui/` each time a new worktree is created.
+
+### Next Prompt
+Phase 4 continues — likely memory/patterns page, or further canvas controls (keyboard shortcuts, zoom-to-fit, node dragging toggle).
+
+---
+
 ## Session — 2026-03-06 | Phase 3, Prompts 3.1–3.3 (≈ 90 min)
 
 ### Prompts Completed

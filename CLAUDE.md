@@ -17,6 +17,6 @@ UI Launch → API Server → npx ruflo hive-mind spawn ... → db updates → UI
 
 ## Coding Rules - Never mock data — always read from the real db - Never add features not in the prompt library unless explicitly asked - When a prompt is ambiguous, ask ONE clarifying question before writing code - All new hooks go in ui/hooks/, all server logic in ui/server/ - Commit at every [CHECKPOINT]
 
-## Current Status Last completed prompt: Prompt 3.3 — Agent Detail Panel (checkpoint commit Phase 3) Current phase: Phase 3 complete — canvas page, node graph, agent detail panel, daemon panel all built Next prompt: Phase 4 — memory/patterns page or further canvas polish
+## Current Status Last completed prompt: Prompt 4.1 — Spawn Agent Modal (checkpoint commit Phase 4) Current phase: Phase 4 in progress — SpawnAgentModal upgraded (dropdown, auto-name, command preview, inline errors) Next prompt: Phase 4 continues — memory/patterns page, or canvas polish (keyboard shortcuts, zoom-to-fit)
 
 ## Known Issues - None yet
