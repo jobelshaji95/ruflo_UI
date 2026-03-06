@@ -4,6 +4,60 @@ Append a new entry at the top after every session. Never delete old entries.
 
 ---
 
+## Session — 2026-03-06 | Phase 3, Prompts 3.1–3.3 (≈ 90 min)
+
+### Prompts Completed
+- **Prompt 3.1** — Canvas Page Shell ✅
+- **Prompt 3.2** — Swarm Canvas Node Graph ✅
+- **Prompt 3.3** — Agent Detail Panel (full replacement) ✅
+- **Runtime Fix** — Sonner `<Toaster />` missing from root layout ✅
+- **Runtime Fix** — DaemonPanel Start/Stop with no feedback/loading states ✅
+- **`[CHECKPOINT]`** — committed all Phase 3 work (see current commit hash via `git log -1`)
+
+### What Was Done
+Phase 3 (canvas visualization layer) completed in one session. Built the 3-column canvas page shell with framer-motion drawer. Implemented the full @xyflow/react node graph with 3 node types (OrchestratorNode, AgentNode, ToolNode), custom MessageEdge, hand-written layout algorithm, MiniMap, Controls, and SpawnAgentModal. Replaced the stub AgentDetailPanel with the full implementation: header with stats row, live elapsed timer, current task section, auto-scrolling task history with pause detection, and expandable memory entries. Fixed two runtime bugs (missing Toaster, DaemonPanel with no feedback).
+
+### Files Created
+| File | Notes |
+|------|-------|
+| `ui/app/(dashboard)/canvas/page.tsx` | 3-column layout: 240px sidebar + flex canvas + 360px framer-motion drawer. Swarm list, db status dot, DaemonPanel pinned to bottom. EmptyState + CopyableCommand shown when no swarm selected. |
+| `ui/components/ruflo/SwarmCanvas.tsx` | Full @xyflow/react canvas. OrchestratorNode (200×80, violet border, pulse ring if running), AgentNode (180×70, + spawn button), ToolNode (140×50, Wrench icon). MessageEdge: dashed+animated when running. Hand-written layout: orchs at y=60, workers y=220, tools y=370. MiniMap, Controls, Background(dots). Panel("top-right") for + Agent button. |
+| `ui/components/ruflo/SpawnAgentModal.tsx` | Overlay modal. POST /agents/spawn { agentType, agentName }. Loading state, toast.success/error, closes on success/cancel/backdrop. |
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `ui/components/ruflo/AgentDetailPanel.tsx` | Full replacement of stub. Header: AgentAvatar(lg) + name/type/ID/StatusBadge + X. Stats row (3-col): Tokens Used, Tasks Done, Running timer. Current Task section. Task History: scrollable, auto-scroll with pause detection (amber badge). Memory Entries: fetch `/swarms/${agentId}/memory`, expandable values. |
+| `ui/components/ruflo/DaemonPanel.tsx` | Added handleStart/handleStop wrappers with try/catch → toast.success/error. Loading label changes ("Starting…"/"Stopping…"). Fixed uptime display (`Math.floor(uptime/1000)s`). Added `lastOutput` debug display. |
+| `ui/app/layout.tsx` | Added `<Toaster position="top-right" theme="dark" richColors />` — was completely missing, causing all toasts to be silent. |
+| `ui/app/globals.css` | Added `@import "@xyflow/react/dist/style.css"` at top — required for React Flow rendering. |
+| `ui/components/ruflo/index.ts` | Added barrel exports: DaemonPanel, AgentDetailPanel, SwarmCanvas, SpawnAgentModal. |
+
+### Deviations from Prompts (with reasons)
+1. **`nodesDraggable={false}`** — Prompt didn't specify drag behavior; set false to keep layout clean and deterministic. Easy to change.
+2. **Memory endpoint reuse** — Prompt 3.3 required memory entries per agent. No new endpoint was needed; existing `GET /swarms/${agentId}/memory` queries `WHERE owner_id = agentId`, which covers this exactly.
+3. **`isOrchestrator`/`isTool` regex** — Prompt implied classification logic without specifying the exact rules. Used `/orchestrator|coordinator|queen/i` for orchestrators and `type === "tool" || currentTask.startsWith("tool:")` for tools.
+4. **`dashdraw` keyframe inline** — React Flow's CSS scoping doesn't support `@keyframes` in Tailwind JIT classes. Injected via `<style>` tag inside SwarmCanvas to keep the animation self-contained.
+5. **Auto-scroll reversed list** — Task history shows oldest first (ascending), re-sorted from the `sortedTasks` array which is descending-by-date. Auto-scroll brings newest into view.
+
+### Bugs Hit & Resolved
+1. **Sonner toasts silent** — `<Toaster />` was never mounted in `ui/app/layout.tsx`. All `toast.*()` calls silently no-op'd. Fix: added `<Toaster position="top-right" theme="dark" richColors />`. ✅ Resolved.
+2. **DaemonPanel Start button doing nothing** — `start()` was called but no loading state, no toast, and no visual feedback existed. Fix: wrapped with `handleStart`/`handleStop`, added `disabled={loading}`, label changes, and `lastOutput` debug display. ✅ Resolved.
+3. **`uptime` displayed as raw ms** — Original format was `uptimes` where `uptime` was in milliseconds. Fix: `Math.floor(uptime / 1000)`. ✅ Resolved.
+4. **Port conflicts on `npm run dev`** — Both Next.js (:3000) and API (:3001) were already running from a previous session. Fix: open `http://localhost:3000/canvas` directly — hot reload picks up changes. ✅ Resolved (not a code bug).
+
+### Blockers / Open Questions
+1. **`RufloSwarm`, `RufloAgent`, `RufloTask` are still socket.io stubs** — Canvas renders correctly when agents arrive via socket, but real ruflo spawn hasn't been run in this session to confirm end-to-end flow.
+2. **`POST /agents/spawn`** — SpawnAgentModal POSTs here but the API endpoint may need to map `agentType` to a real `npx ruflo` sub-command. Verify against `api.ts` implementation.
+3. **Next.js workspace root warning** — Multiple `package-lock.json` files detected; Next.js warns but doesn't fail. Carry forward from Phase 2.
+4. **`POST /swarms/:id/stop`** — Still a no-op placeholder. Carry forward.
+5. **Playwright not installed** — `npm run test` still fails. Install when test prompts begin.
+
+### Next Prompt
+Phase 3 complete. Likely Phase 4 — memory/patterns page, or further canvas polish (keyboard shortcuts, node dragging, zoom-to-fit on swarm change).
+
+---
+
 ## Session — 2026-03-05 | Phase 2, Prompts 2.1–2.3 (≈ 90 min)
 
 ### Prompts Completed

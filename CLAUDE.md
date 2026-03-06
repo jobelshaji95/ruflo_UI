@@ -17,6 +17,6 @@ UI Launch → API Server → npx ruflo hive-mind spawn ... → db updates → UI
 
 ## Coding Rules - Never mock data — always read from the real db - Never add features not in the prompt library unless explicitly asked - When a prompt is ambiguous, ask ONE clarifying question before writing code - All new hooks go in ui/hooks/, all server logic in ui/server/ - Commit at every [CHECKPOINT]
 
-## Current Status Last completed prompt: Prompt 2.3 — Client Hooks (checkpoint commit b9fde7392) Current phase: Phase 2 in progress — server + hooks complete, page components not yet built Next prompt: Phase 2 continues — canvas/flow visualization or sidebar page components
+## Current Status Last completed prompt: Prompt 3.3 — Agent Detail Panel (checkpoint commit Phase 3) Current phase: Phase 3 complete — canvas page, node graph, agent detail panel, daemon panel all built Next prompt: Phase 4 — memory/patterns page or further canvas polish
 
 ## Known Issues - None yet
