@@ -4,6 +4,44 @@ Append a new entry at the top after every session. Never delete old entries.
 
 ---
 
+## Session — 2026-03-07 | Phase 6, Prompt 6.1 (≈ 30 min)
+
+### Prompts Completed
+- **Prompt 6.1** — DaemonPanel rebuild (collapsed/expanded, terminal output, red tint, amber warning) ✅
+- **`[CHECKPOINT]`** — committed Phase 6, Prompt 6.1
+
+### What Was Done
+Full replacement of the minimal Phase 3 `DaemonPanel.tsx` stub with the Prompt 6.1 spec:
+- **Collapsed state**: red-tinted container (`bg-red-950/25 border-red-900/30`) when daemon stopped, pulsing red dot, "Daemon" label, inline Start/Stop button, ChevronDown toggle. Red tint is visually obvious as required.
+- **Expanded state**: ChevronUp, 3-col stats grid (PID / Uptime / Workers — best-effort parsed from `lastOutput` via regex, graceful `—` fallback), "Last loop" relative timestamp sourced from the most-recent `lastMatchedAt` across all patterns (fetched from `GET /patterns` on mount), scrollable 20-line terminal `<pre>`, Start/Stop + Restart buttons.
+- **Amber warning**: shown in both collapsed and expanded states when `!running && activeSwarmId !== null` — "⚠ Daemon stopped — background learning disabled."
+- No API, hook, store, or page changes needed. `useDaemon()` already exposed `restart()`. `GET /patterns` already existed.
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `ui/components/ruflo/DaemonPanel.tsx` | Full replacement. Collapsed/expanded toggle, formatUptime/formatRelative/parseFromOutput helpers, patterns fetch for last learning loop, 20-line terminal, red tint, amber warning. |
+| `ui/package.json` | TypeScript pinned to `5.9.3` (was `^5`) — side-effect of `preview_start` triggering `npm install typescript` when it wasn't found. No functional change. |
+| `ui/package-lock.json` | Updated by the TypeScript install above. |
+
+### Deviations from Prompts (with reasons)
+1. **PID and worker count are best-effort** — Prompt says to show them; ruflo daemon output format is not documented. Implemented as regex parses (`/pid[:\s]+(\d+)/i`, `/workers?[:\s]+(\d+)/i`) that show `—` when not matched. Will populate automatically if ruflo ever prints them.
+2. **`package.json` pinned TypeScript** — Incidental. `preview_start` invoked `npm install typescript` because Next.js couldn't find it. Pinned to the version that was installed (`5.9.3`). No prompt asked for this.
+
+### Bugs Hit & Resolved
+1. **DaemonPanel visually off-screen in preview** — `getBoundingClientRect()` returned `y: 1017` on a 1034px viewport. Not a bug — the panel IS at the correct bottom of the 240px sidebar. The preview screenshot tool captures at ~703px, so the panel appeared clipped. Verified via DOM inspection (`aria-expanded`, class names, computed `background-color`) and `preview_inspect`. ✅ Not a real issue.
+
+### Blockers / Open Questions
+1. **No live swarm for end-to-end amber-warning test** — Warning logic is correct (`!running && activeSwarmId !== null`) but can't be visually confirmed without a running swarm injected via socket.io. Carry forward.
+2. **`POST /swarms/:id/stop`** — Still a no-op placeholder. Carry forward.
+3. **Playwright not installed** — `npm run test` still fails. Carry forward.
+4. **PID / worker count unpopulated** — Will show `—` until ruflo daemon prints them in a parseable format.
+
+### Next Prompt
+Phase 6 continues — likely **Prompt 6.2: Memory & Patterns Page** (`/patterns` route) or canvas polish (keyboard shortcuts, zoom-to-fit). Await user direction.
+
+---
+
 ## Session — 2026-03-06 | Phase 4, Prompt 4.1 (≈ 30 min)
 
 ### Prompts Completed
