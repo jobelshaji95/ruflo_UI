@@ -182,7 +182,7 @@ export default function MemoryPage() {
           >
             Canvas
           </Link>
-          <span className="flex-1 text-center text-xs px-2 py-1.5 rounded-lg bg-slate-800 text-slate-100 font-medium">
+          <span className="flex-1 text-center text-xs px-2 py-1.5 rounded-lg bg-slate-800 text-slate-100 font-medium cursor-default">
             Memory
           </span>
         </div>

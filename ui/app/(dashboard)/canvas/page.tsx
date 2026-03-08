@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plus, TerminalSquare, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
@@ -58,6 +59,19 @@ export default function CanvasPage() {
             className={`size-2 rounded-full ${STATUS_DOT[dbStatus] ?? STATUS_DOT.disconnected}`}
             title={dbStatus}
           />
+        </div>
+
+        {/* Page nav */}
+        <div className="flex gap-1 px-3 py-2 border-b border-slate-800">
+          <span className="flex-1 text-center text-xs px-2 py-1.5 rounded-lg bg-slate-800 text-slate-100 font-medium">
+            Canvas
+          </span>
+          <Link
+            href="/memory"
+            className="flex-1 text-center text-xs px-2 py-1.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-colors"
+          >
+            Memory
+          </Link>
         </div>
 
         {/* New Swarm button */}
