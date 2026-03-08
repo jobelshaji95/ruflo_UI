@@ -123,6 +123,39 @@ function rowToMemoryEntry(row: MemoryRow): RufloMemoryEntry {
   }
 }
 
+export function getMemoryNamespaces(): { namespace: string; count: number }[] {
+  if (!db || !tableExists('memory_entries')) return []
+  return db
+    .prepare(
+      `SELECT namespace, COUNT(*) AS count
+       FROM memory_entries
+       WHERE status = 'active'
+       GROUP BY namespace
+       ORDER BY count DESC`
+    )
+    .all() as { namespace: string; count: number }[]
+}
+
+export function getAllMemory(namespace?: string): RufloMemoryEntry[] {
+  if (!db || !tableExists('memory_entries')) return []
+  const base = `
+    SELECT id, key, namespace, content, type, owner_id, created_at, embedding
+    FROM memory_entries
+    WHERE status = 'active'
+  `
+  let rows: MemoryRow[]
+  if (namespace) {
+    rows = db
+      .prepare(base + ' AND namespace = ? ORDER BY created_at DESC')
+      .all(namespace) as MemoryRow[]
+  } else {
+    rows = db
+      .prepare(base + ' ORDER BY created_at DESC')
+      .all() as MemoryRow[]
+  }
+  return rows.map(rowToMemoryEntry)
+}
+
 export function getMemoryBySwarm(swarmId: string): RufloMemoryEntry[] {
   if (!db || !tableExists('memory_entries')) return []
   const rows = db

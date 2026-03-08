@@ -13,6 +13,8 @@ import {
   getAllAgents,
   getTasksByAgent,
   searchMemory,
+  getAllMemory,
+  getMemoryNamespaces,
   getAllPatterns,
   getRecentActivity,
   getDbHealth,
@@ -74,6 +76,15 @@ app.get('/agents', (_req, res) => {
 
 app.get('/agents/:id/tasks', (req, res) => {
   res.json(getTasksByAgent(req.params.id))
+})
+
+app.get('/memory/namespaces', (_req, res) => {
+  res.json(getMemoryNamespaces())
+})
+
+app.get('/memory', (req, res) => {
+  const ns = req.query.ns ? String(req.query.ns) : undefined
+  res.json(getAllMemory(ns))
 })
 
 app.get('/memory/search', (req, res) => {

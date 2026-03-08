@@ -17,6 +17,6 @@ UI Launch → API Server → npx ruflo hive-mind spawn ... → db updates → UI
 
 ## Coding Rules - Never mock data — always read from the real db - Never add features not in the prompt library unless explicitly asked - When a prompt is ambiguous, ask ONE clarifying question before writing code - All new hooks go in ui/hooks/, all server logic in ui/server/ - Commit at every [CHECKPOINT]
 
-## Current Status Last completed prompt: Prompt 6.1 — DaemonPanel rebuild (collapsed/expanded, terminal output, red tint, amber warning) Current phase: Phase 6 in progress Next prompt: Phase 6 continues — memory/patterns page (`/patterns` route) or canvas polish (keyboard shortcuts, zoom-to-fit)
+## Current Status Last completed prompt: Prompt 7.1 — Memory Browser (`/memory` route, 3-panel namespace/table/detail layout) Current phase: Phase 7 in progress Next prompt: Phase 7 continues — likely Prompt 7.2 (Patterns/Trajectories page) or canvas polish
 
 ## Known Issues - None yet

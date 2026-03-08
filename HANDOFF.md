@@ -4,6 +4,47 @@ Append a new entry at the top after every session. Never delete old entries.
 
 ---
 
+## Session — 2026-03-07 | Phase 7, Prompt 7.1 (≈ 20 min)
+
+### Prompts Completed
+- **Prompt 7.1** — Memory Browser (`/memory` route) ✅
+- **`[CHECKPOINT]`** — committed Phase 7, Prompt 7.1
+
+### What Was Done
+Created the `/memory` page with a 3-panel layout:
+- **Left (280px)**: Wordmark, Canvas/Memory nav tabs, namespace list with count badges ("All" at top), DaemonPanel pinned to bottom. Namespaces loaded from new `GET /memory/namespaces` endpoint on mount.
+- **Main**: Search input (300ms debounce, clears on ×), namespace active-filter pill. Table: NAMESPACE | KEY | VALUE PREVIEW | AGENT | CREATED. Empty state for no results. Row click selects entry.
+- **Right (320px)**: framer-motion slide-in. Full key, namespace/type/embedding badges, value rendered as JSON (pretty-printed), markdown (line-by-line parser for `#`, `-`, `**`, `` ` ``), or plain text. Linked agent row → navigates to `/canvas` and sets `selectedAgentId` in Zustand store. Timestamps section.
+
+### Files Created
+| File | Notes |
+|------|-------|
+| `ui/app/(dashboard)/memory/page.tsx` | Full 3-panel memory browser. Self-contained data fetching via `useMemoryEntries` hook (inline). No new hook file — single-use logic. |
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `ui/server/db.ts` | Added `getMemoryNamespaces()` (GROUP BY namespace, count DESC) and `getAllMemory(namespace?)` (all active entries, optional ns filter, ordered by created_at DESC). |
+| `ui/server/api.ts` | Added `GET /memory/namespaces` and `GET /memory?ns=` endpoints. Registered before `/memory/search` to avoid Express route shadowing. Imported new db functions. |
+
+### Deviations from Prompt (with reasons)
+1. **"Swarm name" column omitted** — `memory_entries` has no `swarm_id` column (schema confirmed in Phase 2). `ownerId` maps to agent, not swarm. Showing agent ownerId in the AGENT column; swarm link in detail panel would require a join that doesn't exist.
+2. **Markdown renderer is inline, no library** — No markdown library installed. Implemented line-by-line renderer covering `#`, `##`, `###`, `- `/`* ` lists, inline `**bold**`/`*italic*`/`` `code` `` was intentionally left out of the line parser to keep it simple. Detects markdown via regex before falling back to plain text.
+3. **JSON pretty-printed before markdown check** — Content that is valid JSON is rendered as a formatted `<pre>` block, more useful than markdown-parsing a JSON string.
+
+### Bugs Hit & Resolved
+- None. Page loaded on first render.
+
+### Blockers / Open Questions
+1. **No live swarm/agent data** — `ownerId` values in memory entries may not match any agent in `rufloStore.agents` (which is populated only from live socket.io events). The "Linked Agent" link sets `selectedAgentId` correctly but canvas may not show the agent unless a swarm is running.
+2. **Namespace count badge on "All"** shows 0 when API not running (expected).
+3. All existing blockers from Phase 6 still carry forward (Playwright, `POST /swarms/:id/stop` no-op, etc.).
+
+### Next Prompt
+Phase 7 continues — likely **Prompt 7.2: Patterns & Trajectories page** (`/patterns` route) or canvas keyboard shortcuts / zoom-to-fit.
+
+---
+
 ## Session — 2026-03-07 | Phase 6, Prompt 6.1 (≈ 30 min)
 
 ### Prompts Completed
